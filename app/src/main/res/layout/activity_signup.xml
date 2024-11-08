@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
+    tools:context=".SignupActivity">
     <LinearLayout
         android:id="@+id/userInfoLL"
         android:layout_width="match_parent"
@@ -21,7 +20,7 @@
             app:srcCompat="@drawable/icon" />
 
         <EditText
-            android:id="@+id/Username"
+            android:id="@+id/usernameET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -35,7 +34,7 @@
             android:paddingRight="20dp" />
 
         <EditText
-            android:id="@+id/Password"
+            android:id="@+id/passwordET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -58,13 +57,6 @@
         app:layout_constraintTop_toBottomOf="@id/userInfoLL" >
 
         <Button
-            android:id="@+id/signinBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/signin_btn" />
-        <Button
             android:id="@+id/signupBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,7 +64,6 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:text="@string/signup_btn" />
-
 
     </LinearLayout>
 
