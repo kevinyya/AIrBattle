@@ -21,7 +21,7 @@
             app:srcCompat="@drawable/icon" />
 
         <EditText
-            android:id="@+id/Username"
+            android:id="@+id/usernameET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -35,7 +35,7 @@
             android:paddingRight="20dp" />
 
         <EditText
-            android:id="@+id/Password"
+            android:id="@+id/passwordET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
