@@ -1,5 +1,6 @@
 package com.example.airbattle;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerDao;
+import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,25 +21,31 @@ public class MainActivity extends AppCompatActivity {
     private Button signinBtn, signupBtn;
     private EditText usernameET, passwordET;
 
+    // Database Dao
+    private PlayerDao playerDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get and Load Last Active Player
-        // Remember Me Checkbox
+        // Get Database Instance
+        playerDao = PlayerDatabase.getInstance(this).playerDao();
 
         // Get Username and Password
         usernameET = (EditText)findViewById(R.id.usernameET);
         passwordET = (EditText)findViewById(R.id.passwordET);
+
+        // Remember me??
+        // Get and Load Last Active Player
+        loadActivePlayer();
 
         // Sign-in Button Click
         signinBtn = findViewById(R.id.signinBtn);
         signinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Sign-in Button Click");
-
+                // Get EditView Content
                 String username = usernameET.getText().toString();
                 String password = passwordET.getText().toString();
 
@@ -44,15 +54,33 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar.make(findViewById(android.R.id.content),
                             R.string.input_hint, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    // Check Player Validation by Username
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Database not Empty and Username Existed
+                            if (isExisted(username)) {
+                                // Disable Last Active Player
+                                playerDao.disableActivePlayer();
 
-                    // Reset and Set New Active Player
+                                // Get Player
+                                Player player = playerDao.getPlayer(username);
 
-                    // Login and jump to MenuActivity
-
-                    Log.d("Debug", "Login and jump to MenuActivity");
+                                // Check Password
+                                if (player.getPassword().equals(password)) {
+                                    // Active User
+                                    playerDao.enableActivePlayer(username);
+                                    // Login and jump to MenuActivity
+                                } else {
+                                    Snackbar.make(findViewById(android.R.id.content),
+                                            R.string.password_error, Snackbar.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        R.string.signup_hint, Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    }).start();
                 }
-
             }
         });
 
@@ -61,11 +89,33 @@ public class MainActivity extends AppCompatActivity {
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Sign-up Button Click");
                 // Jump to SignupActivity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(intent);
             }
         });
+    }
+    private boolean isEmpty() {
+        return playerDao.getCnt() == 0 ? true : false;
+    }
+
+    private boolean isExisted(String username) {
+        return playerDao.getExisted(username) != 0 ? true : false;
+    }
+
+    private void loadActivePlayer() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Check Active User and load info
+                if (!isEmpty() && playerDao.getActive() == 1) {
+                    Player activePlayer = playerDao.getActivePlayer();
+                    usernameET.setText(activePlayer.getUsername());
+                    passwordET.setText(activePlayer.getPassword());
+                } else {
+                    // Log.d("Debug", "No Active User");
+                }
+            }
+        }).start();
     }
 }
