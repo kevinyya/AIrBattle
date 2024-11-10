@@ -47,8 +47,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Jump to RankActivity
-//                startActivity(intent);
-//                Intent intent = new Intent(getApplicationContext(), RankActivity.class);
+                Intent intent = new Intent(getApplicationContext(), RankActivity.class);
+                startActivity(intent);
             }
         });
 

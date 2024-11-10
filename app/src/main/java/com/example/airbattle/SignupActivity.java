@@ -28,13 +28,14 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Get EditView
         usernameET = (EditText)findViewById(R.id.usernameET);
         passwordET = (EditText)findViewById(R.id.passwordET);
 
         // Get Database Instance
         playerDao = PlayerDatabase.getInstance(this).playerDao();
 
-        // Return
+        // Return in ActionBar
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
