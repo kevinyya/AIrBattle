@@ -16,5 +16,12 @@
     <string name="setting_btn">Settings</string>
     <string name="logout_btn">Log Out</string>
     <string name="exit_btn">Exit</string>
+    <string name="about_title">About AirBattle</string>
+    <string name="about_msg">- Control the movement with your finger.
+        \n- Aircraft will shoot automatically.
+        \n- Pick up floating props for enhancement.
+        \n- See your best record in ranking.
+        \n- Enjoy the game!.
+    </string>
 
 </resources>

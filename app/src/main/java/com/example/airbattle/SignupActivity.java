@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar;
 public class SignupActivity extends AppCompatActivity {
     private Button signupBtn;
     private EditText usernameET, passwordET;
-
     private PlayerDao playerDao;
 
     @Override
