@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                                     // Active User
                                     playerDao.enableActivePlayer(username);
                                     // Login and jump to MenuActivity
+                                    Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                                    startActivity(intent);
                                 } else {
                                     Snackbar.make(findViewById(android.R.id.content),
                                             R.string.password_error, Snackbar.LENGTH_SHORT).show();
