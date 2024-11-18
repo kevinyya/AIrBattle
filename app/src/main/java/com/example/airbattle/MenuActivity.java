@@ -30,6 +30,9 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Debug", "Start Game");
+                // Start the GameActivity
+                Intent intent = new Intent(MenuActivity.this, GameActivity.class);
+                startActivity(intent);
             }
         });
 
