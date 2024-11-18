@@ -35,6 +35,8 @@
             android:name=".GameActivity"
             android:exported="true" />
 
+        <activity android:name=".GamePause" />
+
     </application>
 
 </manifest>
