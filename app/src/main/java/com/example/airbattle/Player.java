@@ -67,4 +67,13 @@ public class Player {
     public void decreaseHealth() {
         health--;
     }
+
+    // Getter methods for x and y positions
+    public float getX() {
+        return x; // Return current x position
+    }
+
+    public float getY() {
+        return y; // Return current y position
+    }
 }

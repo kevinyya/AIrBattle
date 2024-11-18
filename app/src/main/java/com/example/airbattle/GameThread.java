@@ -28,7 +28,9 @@ public class GameThread extends Thread {
             try {
                 canvas = surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    game.update(System.currentTimeMillis());
+                    if (!game.isPaused()) { // Only update and draw if the game is not paused
+                        game.update(System.currentTimeMillis());
+                    }
                     game.draw(canvas);
                 }
             } catch (IllegalStateException e) {

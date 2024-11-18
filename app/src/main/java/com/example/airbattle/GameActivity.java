@@ -3,16 +3,24 @@ package com.example.airbattle;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class GameActivity extends AppCompatActivity {
     private Game game;
     private GameThread gameThread;
     private SurfaceView gameView;
+
+    private SurfaceHolder surfaceHolder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,27 +38,49 @@ public class GameActivity extends AppCompatActivity {
         Bitmap heartBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background); // Load background
         Bitmap explosionBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.explosion);
+        Bitmap pauseBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pause);
 
         gameView = findViewById(R.id.gameSurfaceView); // Ensure your SurfaceView has this ID
-        SurfaceHolder surfaceHolder = gameView.getHolder(); // Get the SurfaceHolder
+        surfaceHolder = gameView.getHolder(); // Get the SurfaceHolder
 
         // Get screen dimensions
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        int screenWidth = wm.getDefaultDisplay().getWidth();
-        int screenHeight = wm.getDefaultDisplay().getHeight();
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics); // Use getMetrics to get screen dimensions
+        int screenWidth = metrics.widthPixels; // Get the width of the screen
+        int screenHeight = metrics.heightPixels; // Get the height of the screen
 
         // Initialize the game and the thread
-        game = new Game(playerBitmap, bulletBitmap, enemyBitmaps, heartBitmap, backgroundBitmap, explosionBitmap, screenWidth, screenHeight, this); // Pass 'this' as context
+        game = new Game(playerBitmap, bulletBitmap, enemyBitmaps, heartBitmap, backgroundBitmap, explosionBitmap, pauseBitmap, screenWidth, screenHeight, this); // Pass 'this' as context
         gameThread = new GameThread(surfaceHolder, game);
+
+        // Set up the pause button
+        ImageButton pauseButton = findViewById(R.id.pauseButton);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Game", "Pause button clicked");
+                game.pauseGame(); // Call the pause method in the Game class
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Start the game thread if it's not already running
-        if (!gameThread.isAlive()) {
-            gameThread.setRunning(true);
-            gameThread.start();
+
+        // Resume the game state if it was paused
+        if (game != null && game.isPaused()) {
+            game.resumeGame();
+        }
+
+        // Check if the game thread is already running
+        if (gameThread == null || !gameThread.isAlive()) {
+            gameThread = new GameThread(surfaceHolder, game); // Create a new instance
+            gameThread.setRunning(true); // Set the thread to running
+            gameThread.start(); // Start the thread
+        } else {
+            Log.d("GameActivity", "Game thread is already running.");
         }
     }
 
@@ -68,11 +98,22 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+        float touchX = event.getX();
+        float touchY = event.getY();
 
-        // Update player position based on touch input
-        game.handleTouch(x, y); // Call handleTouch with only x and y
-        return true; // Indicate that the touch event was handled
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                // Call the handleTouch method continuously as the finger moves
+                game.handleTouch(touchX, touchY);
+                break;
+            case MotionEvent.ACTION_DOWN:
+                // Update position on touch down
+                game.handleTouch(touchX, touchY);
+                break;
+            case MotionEvent.ACTION_UP:
+                // Handle touch release if necessary (optional)
+                break;
+        }
+        return true; // Return true to indicate the event was handled
     }
 }

@@ -37,8 +37,8 @@ public class Enemy {
 
     private float getInitialSpeed(int enemyType) {
         switch (enemyType) {
-            case 0: return 5; // Small enemy speed
-            case 1: return 3; // Medium enemy speed
+            case 0: return 3; // Small enemy speed
+            case 1: return 2; // Medium enemy speed
             case 2: return 1; // Large enemy speed
             default: return 2;
         }

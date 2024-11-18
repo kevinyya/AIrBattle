@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class Game {
     private Bitmap heartBitmap;
     private Bitmap backgroundBitmap; // Background bitmap
     private Bitmap explosionBitmap; // Bitmap for explosion effect
+    private Bitmap pauseBitmap; // Bitmap for pause button
+    private Rect pauseButtonRect; // Rect for pause button touch detection
     private float lastDestroyedEnemyX; // X position of last destroyed enemy
     private float lastDestroyedEnemyY; // Y position of last destroyed enemy
     private long explosionStartTime; // Time when explosion starts
@@ -37,15 +40,19 @@ public class Game {
     private Context context; // Context for dialogs
 
     private long lastSpawnTime;
-    private final long spawnInterval = 2000; // Spawn an enemy every 2 seconds
+    private final long spawnInterval = 3000; // Spawn an enemy every 2 seconds
     private long lastBulletTime; // Track last bullet spawn time
-    private final long bulletInterval = 1000; // Shoot a bullet every 1 second
+    private final long bulletInterval = 800; // Shoot a bullet every 1 second
 
     private long elapsedTime = 0; // Track elapsed time in milliseconds
     private final long increaseSpawnRateInterval = 60000; // 1 minute in milliseconds
-    private float spawnRateMultiplier = 0.5f; // Initial spawn rate multiplier
+    private float spawnRateMultiplier = 0.2f; // Initial spawn rate multiplier
+    private float lastTouchX;
+    private float lastTouchY;
 
-    public Game(Bitmap playerBitmap, Bitmap bulletBitmap, Bitmap[] enemyBitmaps, Bitmap heartBitmap, Bitmap backgroundBitmap, Bitmap explosionBitmap, int screenWidth, int screenHeight, Context context) {
+    private boolean isPaused = false;
+
+    public Game(Bitmap playerBitmap, Bitmap bulletBitmap, Bitmap[] enemyBitmaps, Bitmap heartBitmap, Bitmap backgroundBitmap, Bitmap explosionBitmap, Bitmap pauseBitmap, int screenWidth, int screenHeight, Context context) {
         this.player = new Player(playerBitmap, bulletBitmap, this);
         this.enemies = new CopyOnWriteArrayList<>();
         this.bullets = new CopyOnWriteArrayList<>();
@@ -58,6 +65,7 @@ public class Game {
         this.heartBitmap = heartBitmap;
         this.backgroundBitmap = backgroundBitmap; // Initialize the background bitmap
         this.explosionBitmap = explosionBitmap; // Initialize the explosion bitmap
+        this.pauseBitmap = pauseBitmap; // Initialize the pause bitmap
         this.playerHealth = MAX_HEALTH; // Set player's initial health
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -65,7 +73,9 @@ public class Game {
         this.lastSpawnTime = System.currentTimeMillis(); // Initialize last spawn time
         this.lastBulletTime = System.currentTimeMillis(); // Initialize last bullet time
 
+
         initializePlayerPosition();
+
     }
 
     private void initializePlayerPosition() {
@@ -80,9 +90,8 @@ public class Game {
 
         // Check if one minute has passed to increase the spawn rate
         if (elapsedTime >= increaseSpawnRateInterval) {
-            spawnRateMultiplier += 0.3f; // Increase the spawn rate by 30%
+            spawnRateMultiplier += 0.2f; // Increase the spawn rate by 30%
             elapsedTime = 0; // Reset elapsed time
-            Log.d("SpawnRate", "Spawn rate increased to: " + spawnRateMultiplier);
         }
 
         // Calculate adjusted spawn interval based on the multiplier
@@ -142,7 +151,9 @@ public class Game {
         }
 
         // Remove off-screen bullets
-        bullets.removeIf(Bullet::isOffScreen); // Use lambda for cleaner syntax
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            bullets.removeIf(Bullet::isOffScreen); // Use lambda for cleaner syntax
+        }
     }
 
     private void handlePlayerCollision() {
@@ -232,7 +243,20 @@ public class Game {
             resetGame(); // Restart game on touch if game over
             return;
         }
-        player.setPosition(x, y); // Update player position based on touch input
+
+        // Check for pause button touch
+        if (backgroundBitmap.getWidth() - 200 < x &&  x < backgroundBitmap.getWidth() - 20 && 20 < y && y < 150) {
+            Log.d("Game", "Pause button clicked at: (" + x + ", " + y + ")");
+            goToPauseScreen(); // Navigate to the pause screen
+            return;
+        }
+
+        if (y > backgroundBitmap.getHeight()/2) {
+            player.setPosition(x, y);
+        } else {
+            player.setPosition(x, backgroundBitmap.getHeight()/2);
+        }
+         // Update player position based on touch input
     }
 
     public void increaseScore(int amount) {
@@ -286,14 +310,40 @@ public class Game {
             case 2: // Large enemy
                 return 10.0f; // Scale up to 150%
             default:
-                return 1.0f; // Default scale
+                return 2.0f; // Default scale
         }
     }
+
     private Bitmap getScaledExplosionBitmap(int enemyType) {
         float scale = getExplosionScale(enemyType);
         int explosionWidth = (int) (59 * scale); // Original width
         int explosionHeight = (int) (59 * scale); // Original height
 
         return Bitmap.createScaledBitmap(explosionBitmap, explosionWidth, explosionHeight, false);
+    }
+
+    public void pauseGame() {
+        isPaused = true; // Set the game to paused state
+        // Logic to pause the game, such as stopping updates or showing a pause menu
+        goToPauseScreen();
+        Log.d("Game", "Game paused");
+    }
+
+    public void resumeGame() {
+        isPaused = false; // Set the game to running state
+        // Logic to resume gameplay
+        Log.d("Game", "Game resumed");
+    }
+
+    // Other methods like handleTouch, update, draw, etc.
+
+    public boolean isPaused() {
+        return isPaused; // To check the paused state if necessary
+    }
+
+    private void goToPauseScreen() {
+        Intent intent = new Intent(context, GamePause.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }
