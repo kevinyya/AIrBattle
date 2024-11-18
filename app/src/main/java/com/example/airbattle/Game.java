@@ -40,9 +40,9 @@ public class Game {
     private Context context; // Context for dialogs
 
     private long lastSpawnTime;
-    private final long spawnInterval = 3000; // Spawn an enemy every 2 seconds
+    private final long spawnInterval = 2000; // Spawn an enemy every 2 seconds
     private long lastBulletTime; // Track last bullet spawn time
-    private final long bulletInterval = 800; // Shoot a bullet every 1 second
+    private final long bulletInterval = 1000; // Shoot a bullet every 1 second
 
     private long elapsedTime = 0; // Track elapsed time in milliseconds
     private final long increaseSpawnRateInterval = 60000; // 1 minute in milliseconds
@@ -104,7 +104,7 @@ public class Game {
                     enemyBitmaps[enemyType].getWidth() / 2,
                     enemyBitmaps[enemyType].getHeight() / 2,
                     false);
-            enemies.add(new Enemy(x, 0, scaledBitmap, enemyType)); // Add new enemy
+            enemies.add(new Enemy(x, -250, scaledBitmap, enemyType)); // Add new enemy
             lastSpawnTime = currentTime; // Update last spawn time
         }
     }
@@ -159,8 +159,16 @@ public class Game {
     private void handlePlayerCollision() {
         playerHealth--; // Decrease player health on collision
         if (playerHealth <= 0) {
+            lastDestroyedEnemyX = player.getX(); // Get the enemy's X position
+            lastDestroyedEnemyY = player.getY(); // Get the enemy's Y position
+            explosionStartTime = System.currentTimeMillis(); // Start explosion timer
+            explosionBitmap = getScaledExplosionBitmap(2);
             isGameOver = true; // End the game if health is zero
-            showGameOverDialog(); // Show game over dialog
+
+            Intent intent = new Intent(context, GameOver.class);
+            intent.putExtra("SCORE", score); // Assuming playerScore holds the current score
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
 
@@ -205,10 +213,6 @@ public class Game {
         if (System.currentTimeMillis() - explosionStartTime < explosionDuration) {
             canvas.drawBitmap(explosionBitmap, lastDestroyedEnemyX, lastDestroyedEnemyY, null);
         }
-
-        if (isGameOver) {
-            drawGameOver(canvas); // Draw game over screen if applicable
-        }
     }
 
     private void drawScore(Canvas canvas) {
@@ -222,12 +226,6 @@ public class Game {
         for (int i = 0; i < playerHealth; i++) {
             canvas.drawBitmap(heartBitmap, canvas.getWidth() - 1100 + i * 100, canvas.getHeight() - 150, null);
         }
-    }
-
-    private void drawGameOver(Canvas canvas) {
-        paint.setTextSize(100);
-        paint.setColor(Color.RED);
-        canvas.drawText("Game Over", 250, 500, paint);
     }
 
     private boolean checkCollision(Player player, Enemy enemy) {
@@ -256,7 +254,6 @@ public class Game {
         } else {
             player.setPosition(x, backgroundBitmap.getHeight()/2);
         }
-         // Update player position based on touch input
     }
 
     public void increaseScore(int amount) {
@@ -277,24 +274,6 @@ public class Game {
         if (enemy.isMedium()) return 30;
         if (enemy.isLarge()) return 100;
         return 0;
-    }
-
-    public void showGameOverDialog() {
-        ((Activity) context).runOnUiThread(() -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Game Over");
-            builder.setMessage("Score: " + score);
-
-            builder.setPositiveButton("Restart", (dialog, which) -> resetGame()); // Restart the game
-            builder.setNegativeButton("Main Menu", (dialog, which) -> {
-                // Logic to go back to the main menu
-                Intent intent = new Intent(context, MenuActivity.class);
-                context.startActivity(intent);
-            });
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        });
     }
 
     public void addBullet(Bullet bullet) {

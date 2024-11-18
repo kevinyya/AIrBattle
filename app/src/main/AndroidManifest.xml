@@ -30,12 +30,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Add GameActivity declaration -->
         <activity
             android:name=".GameActivity"
             android:exported="true" />
 
         <activity android:name=".GamePause" />
+
+        <activity android:name=".GameOver">
+
+        </activity>
 
     </application>
 
