@@ -10,15 +10,22 @@ import android.widget.TextView;
 import android.media.MediaPlayer;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerDao;
+import com.example.airbattle.PlayerDatabase.PlayerDatabase;
+
 public class GameOver extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
+    private PlayerDao playerDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameover); // Reference to the new layout
 
+        // Get PlayerDao
+        playerDao = PlayerDatabase.getInstance(this).playerDao();
 
         // Play game over sound
         mediaPlayer = MediaPlayer.create(this, R.raw.gameover);
@@ -32,6 +39,9 @@ public class GameOver extends AppCompatActivity {
         TextView scoreTextView = findViewById(R.id.score_text);
         Button restartButton = findViewById(R.id.restart_button);
         Button mainMenuButton = findViewById(R.id.main_menu_button);
+
+        // Update score to Database
+        updateScore(score);
 
         // Set the score text
         scoreTextView.setText("Score: " + score);
@@ -61,6 +71,20 @@ public class GameOver extends AppCompatActivity {
         Intent intent = new Intent(this, MenuActivity.class); // Adjust to your main menu activity
         startActivity(intent);
         finish(); // Finish this activity
+    }
+
+    private void updateScore(int score) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Get Active User
+                Player player = playerDao.getActivePlayer();
+                int history_score = player.getScore();
+                if (score > history_score) {
+                    playerDao.updateScore(player.getUsername(), score);
+                }
+            }
+        }).start();
     }
 
 }
