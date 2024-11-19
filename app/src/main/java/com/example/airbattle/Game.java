@@ -1,7 +1,10 @@
 package com.example.airbattle;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -53,6 +56,7 @@ public class Game {
     private boolean isPaused = false;
     private SoundPool soundPool;
     private int soundId;
+    private boolean isSoundLoaded = false;
 
     public Game(Bitmap playerBitmap, Bitmap bulletBitmap, Bitmap[] enemyBitmaps, Bitmap heartBitmap, Bitmap backgroundBitmap, Bitmap explosionBitmap, Bitmap pauseBitmap, int screenWidth, int screenHeight, Context context) {
         this.player = new Player(playerBitmap, bulletBitmap, this);
@@ -77,6 +81,7 @@ public class Game {
 
         initializePlayerPosition();
         initializeSoundPool();
+        applySavedVolumes();
     }
 
     private void initializePlayerPosition() {
@@ -96,14 +101,49 @@ public class Game {
                 .setAudioAttributes(audioAttributes)
                 .build();
 
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                if (status == 0) {
+                    isSoundLoaded = true;
+                    Log.d("Game", "Sound loaded successfully");
+                } else {
+                    Log.e("Game", "Failed to load sound");
+                }
+            }
+        });
+
         soundId = soundPool.load(context, R.raw.explosion, 1);
     }
 
-    private void playExplosionSound() {
-        if (soundPool != null) {
-            soundPool.play(soundId, 1, 1, 0, 0, 1);
+    private void applySavedVolumes() {
+        SharedPreferences preferences = context.getSharedPreferences("game_settings", Context.MODE_PRIVATE);
+        float effectVolume = preferences.getFloat("effect_volume", 1.0f); // Default to 100% volume
+        Log.d("Game", "Retrieved effect volume: " + effectVolume);
+
+        setEffectVolume(effectVolume);
+    }
+
+    private void setEffectVolume(float volume) {
+        if (soundPool != null && isSoundLoaded) {
+            soundPool.setVolume(soundId, volume, volume);
+            Log.d("Game", "Effect volume set to: " + volume);
         }
     }
+
+    public void playExplosionSound() {
+        SharedPreferences preferences = context.getSharedPreferences("game_settings", Context.MODE_PRIVATE);
+        float effectVolume = preferences.getFloat("effect_volume", 1.0f); // Default to 100% volume
+        Log.d("Game", "Playing sound with volume: " + effectVolume);
+
+        if (soundPool != null && isSoundLoaded) {
+            soundPool.play(soundId, effectVolume, effectVolume, 0, 0, 1);
+        } else {
+            Log.d("Game", "Sound not loaded yet");
+        }
+    }
+
+
 
     public void releaseResources() {
         if (soundPool != null) {
@@ -300,6 +340,7 @@ public class Game {
         playerHealth = MAX_HEALTH; // Reset player health
         isGameOver = false;
         initializePlayerPosition();
+        applySavedVolumes();
     }
 
     private int getEnemyPoints(Enemy enemy) {
@@ -344,6 +385,7 @@ public class Game {
     public void resumeGame() {
         isPaused = false; // Set the game to running state
         // Logic to resume gameplay
+        applySavedVolumes();
         Log.d("Game", "Game resumed");
     }
 
