@@ -46,4 +46,7 @@ public interface PlayerDao {
 
     @Query("SELECT COUNT(*) FROM players WHERE status = true")
     int getActive();
+
+    @Query("SELECT score FROM players WHERE status = true")
+    int getScore();
 }
