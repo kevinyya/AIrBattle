@@ -1,7 +1,10 @@
 package com.example.airbattle;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +12,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.util.Log;
 
@@ -47,10 +53,10 @@ public class Game {
     private long elapsedTime = 0; // Track elapsed time in milliseconds
     private final long increaseSpawnRateInterval = 60000; // 1 minute in milliseconds
     private float spawnRateMultiplier = 0.2f; // Initial spawn rate multiplier
-    private float lastTouchX;
-    private float lastTouchY;
-
     private boolean isPaused = false;
+    private SoundPool soundPool;
+    private int soundId;
+    private boolean isSoundLoaded = false;
 
     public Game(Bitmap playerBitmap, Bitmap bulletBitmap, Bitmap[] enemyBitmaps, Bitmap heartBitmap, Bitmap backgroundBitmap, Bitmap explosionBitmap, Bitmap pauseBitmap, int screenWidth, int screenHeight, Context context) {
         this.player = new Player(playerBitmap, bulletBitmap, this);
@@ -58,7 +64,7 @@ public class Game {
         this.bullets = new CopyOnWriteArrayList<>();
         this.score = 0;
         this.paint = new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.BLACK);
         paint.setTextSize(100);
         this.isGameOver = false;
         this.enemyBitmaps = enemyBitmaps;
@@ -73,9 +79,9 @@ public class Game {
         this.lastSpawnTime = System.currentTimeMillis(); // Initialize last spawn time
         this.lastBulletTime = System.currentTimeMillis(); // Initialize last bullet time
 
-
         initializePlayerPosition();
-
+        initializeSoundPool();
+        applySavedVolumes();
     }
 
     private void initializePlayerPosition() {
@@ -84,6 +90,67 @@ public class Game {
         player.setPosition((screenWidth) / 2, screenHeight - playerHeight - 150);
     }
 
+    private void initializeSoundPool() {
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(1)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                if (status == 0) {
+                    isSoundLoaded = true;
+                    Log.d("Game", "Sound loaded successfully");
+                } else {
+                    Log.e("Game", "Failed to load sound");
+                }
+            }
+        });
+
+        soundId = soundPool.load(context, R.raw.explosion, 1);
+    }
+
+    private void applySavedVolumes() {
+        SharedPreferences preferences = context.getSharedPreferences("game_settings", Context.MODE_PRIVATE);
+        float effectVolume = preferences.getFloat("effect_volume", 1.0f); // Default to 100% volume
+        Log.d("Game", "Retrieved effect volume: " + effectVolume);
+
+        setEffectVolume(effectVolume);
+    }
+
+    private void setEffectVolume(float volume) {
+        if (soundPool != null && isSoundLoaded) {
+            soundPool.setVolume(soundId, volume, volume);
+            Log.d("Game", "Effect volume set to: " + volume);
+        }
+    }
+
+    public void playExplosionSound() {
+        SharedPreferences preferences = context.getSharedPreferences("game_settings", Context.MODE_PRIVATE);
+        float effectVolume = preferences.getFloat("effect_volume", 1.0f); // Default to 100% volume
+        Log.d("Game", "Playing sound with volume: " + effectVolume);
+
+        if (soundPool != null && isSoundLoaded) {
+            soundPool.play(soundId, effectVolume, effectVolume, 0, 0, 1);
+        } else {
+            Log.d("Game", "Sound not loaded yet");
+        }
+    }
+
+
+
+    public void releaseResources() {
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
+    }
     private void spawnEnemies(long currentTime) {
         // Update elapsed time
         elapsedTime += (currentTime - lastSpawnTime);
@@ -142,6 +209,11 @@ public class Game {
             // Check collision with player
             if (checkCollision(player, enemy)) {
                 handlePlayerCollision(); // Handle player collision with enemy
+                lastDestroyedEnemyX = enemy.getX(); // Get the enemy's X position
+                lastDestroyedEnemyY = enemy.getY(); // Get the enemy's Y position
+                explosionStartTime = System.currentTimeMillis(); // Start explosion timer
+                explosionBitmap = getScaledExplosionBitmap(enemy.getType());
+                playExplosionSound();
                 enemies.remove(i); // Remove enemy on collision
                 continue;
             }
@@ -186,6 +258,7 @@ public class Game {
                     lastDestroyedEnemyY = enemy.getY(); // Get the enemy's Y position
                     explosionStartTime = System.currentTimeMillis(); // Start explosion timer
                     explosionBitmap = getScaledExplosionBitmap(enemy.getType());
+                    playExplosionSound();
                     increaseScore(getEnemyPoints(enemy));
                     enemies.remove(enemyIndex);
                 }
@@ -267,6 +340,7 @@ public class Game {
         playerHealth = MAX_HEALTH; // Reset player health
         isGameOver = false;
         initializePlayerPosition();
+        applySavedVolumes();
     }
 
     private int getEnemyPoints(Enemy enemy) {
@@ -311,6 +385,7 @@ public class Game {
     public void resumeGame() {
         isPaused = false; // Set the game to running state
         // Logic to resume gameplay
+        applySavedVolumes();
         Log.d("Game", "Game resumed");
     }
 

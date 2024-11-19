@@ -1,7 +1,9 @@
 package com.example.airbattle;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,6 +22,8 @@ public class GameActivity extends AppCompatActivity {
     private SurfaceView gameView;
 
     private SurfaceHolder surfaceHolder;
+
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -42,6 +46,9 @@ public class GameActivity extends AppCompatActivity {
 
         gameView = findViewById(R.id.gameSurfaceView); // Ensure your SurfaceView has this ID
         surfaceHolder = gameView.getHolder(); // Get the SurfaceHolder
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.battle_bgm);
+        mediaPlayer.setLooping(true); // Loop the music
 
         // Get screen dimensions
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -68,7 +75,11 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        applySavedVolumes();
 
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
         // Resume the game state if it was paused
         if (game != null && game.isPaused()) {
             game.resumeGame();
@@ -87,6 +98,10 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
         // Stop the game thread
         gameThread.setRunning(false);
         try {
@@ -115,5 +130,19 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
         return true; // Return true to indicate the event was handled
+    }
+
+    private void applySavedVolumes() {
+        SharedPreferences preferences = getSharedPreferences("game_settings", MODE_PRIVATE);
+        float musicVolume = preferences.getFloat("music_volume", 1.0f); // Default to 100% volume
+        float effectVolume = preferences.getFloat("effect_volume", 1.0f);
+
+        setMusicVolume(musicVolume);
+    }
+
+    private void setMusicVolume(float volume) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(volume, volume);
+        }
     }
 }
