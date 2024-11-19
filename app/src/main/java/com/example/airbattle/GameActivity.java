@@ -1,5 +1,6 @@
 package com.example.airbattle;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -74,6 +75,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        applySavedVolumes();
 
         if (mediaPlayer != null) {
             mediaPlayer.start();
@@ -128,5 +130,19 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
         return true; // Return true to indicate the event was handled
+    }
+
+    private void applySavedVolumes() {
+        SharedPreferences preferences = getSharedPreferences("game_settings", MODE_PRIVATE);
+        float musicVolume = preferences.getFloat("music_volume", 1.0f); // Default to 100% volume
+        float effectVolume = preferences.getFloat("effect_volume", 1.0f);
+
+        setMusicVolume(musicVolume);
+    }
+
+    private void setMusicVolume(float volume) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(volume, volume);
+        }
     }
 }
