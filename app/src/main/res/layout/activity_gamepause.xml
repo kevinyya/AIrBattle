@@ -10,25 +10,79 @@
         android:layout_height="wrap_content"
         android:text="Pause"
         android:textSize="40sp"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp" />
 
     <Button
         android:id="@+id/resume_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="Resume"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/pause_text"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="80dp" />
+
+    <TextView
+        android:id="@+id/Volume_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volume Setting"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/resume_button"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/musicVolume_text"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Music Volume:"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Volume_text"
+        android:layout_marginTop="20dp" />
+
+    <SeekBar
+        android:id="@+id/musicVolumeSeekBar"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/musicVolume_text"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/effectVolume_text"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Effect Volume:"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/musicVolumeSeekBar"
+        android:layout_marginTop="20dp" />
+
+    <SeekBar
+        android:id="@+id/effectVolumeSeekBar"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/effectVolume_text"
+        android:layout_marginTop="20dp" />
+
 
     <Button
         android:id="@+id/main_menu_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="Back to Main Menu"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/resume_button"
+        android:layout_below="@id/effectVolumeSeekBar"
         android:layout_marginTop="20dp" />
 </RelativeLayout>
