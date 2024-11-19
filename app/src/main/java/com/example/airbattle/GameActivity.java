@@ -2,6 +2,7 @@ package com.example.airbattle;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,6 +21,8 @@ public class GameActivity extends AppCompatActivity {
     private SurfaceView gameView;
 
     private SurfaceHolder surfaceHolder;
+
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -42,6 +45,9 @@ public class GameActivity extends AppCompatActivity {
 
         gameView = findViewById(R.id.gameSurfaceView); // Ensure your SurfaceView has this ID
         surfaceHolder = gameView.getHolder(); // Get the SurfaceHolder
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.battle_bgm);
+        mediaPlayer.setLooping(true); // Loop the music
 
         // Get screen dimensions
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -69,6 +75,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
         // Resume the game state if it was paused
         if (game != null && game.isPaused()) {
             game.resumeGame();
@@ -87,6 +96,10 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
         // Stop the game thread
         gameThread.setRunning(false);
         try {
