@@ -35,13 +35,13 @@
             android:layout_marginTop="32dp"
             android:text="@string/start_btn" />
         <Button
-            android:id="@+id/hardModeBtn"
+            android:id="@+id/diffBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/hardmode_btn" />
+            android:text="@string/diff_normal" />
 
         <Button
             android:id="@+id/rankBtn"

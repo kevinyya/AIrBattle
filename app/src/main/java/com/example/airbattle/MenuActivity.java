@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.util.Log;
@@ -14,42 +15,79 @@ import android.widget.Button;
 public class MenuActivity extends AppCompatActivity {
 
     private Button startBtn;
-    private Button hardModeBtn;
+    private Button diffBtn;
     private Button rankBtn;
     private Button aboutBtn;
     private Button logoutBtn;
     private Button exitBtn;
+
+    private boolean isHard = false;
+
+    void saveDifficulty() {
+        SharedPreferences pref = getSharedPreferences("AirBattle", MODE_PRIVATE);
+        pref.edit().putBoolean("isHard", isHard).apply();
+        // Update Button
+        if (isHard) {
+            diffBtn.setText(R.string.diff_hard);
+        } else {
+            diffBtn.setText(R.string.diff_normal);
+        }
+    }
+
+    void loadDifficutly() {
+        SharedPreferences pref = getSharedPreferences("AirBattle", MODE_PRIVATE);
+        isHard = pref.getBoolean("isHard", false);
+        // Update Button
+        if (isHard) {
+            diffBtn.setText(R.string.diff_hard);
+        } else {
+            diffBtn.setText(R.string.diff_normal);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadDifficutly();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        // Get Button Views
         startBtn = findViewById(R.id.startBtn);
+        diffBtn = findViewById(R.id.diffBtn);
+        rankBtn = findViewById(R.id.rankBtn);
+        aboutBtn = findViewById(R.id.aboutBtn);
+        logoutBtn = findViewById(R.id.logoutBtn);
+        exitBtn = findViewById(R.id.exitBtn);
+
+        // Load Difficulty
+        loadDifficutly();
+
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("Debug", "Start Game");
                 // Start the GameActivity
                 Intent intent = new Intent(MenuActivity.this, GameActivity.class);
+                if (isHard) intent.putExtra("HARD_MODE", true);
                 startActivity(intent);
             }
         });
 
-        hardModeBtn = findViewById(R.id.hardModeBtn);
-        hardModeBtn.setOnClickListener(new View.OnClickListener() {
+        diffBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Hard Mode Activated");
-                // Start the GameActivity with hard mode
-                Intent intent = new Intent(MenuActivity.this, GameActivity.class);
-                intent.putExtra("HARD_MODE", true);
-                startActivity(intent);
+                // Update and Save difficulty
+                isHard = !isHard;
+                saveDifficulty();
             }
         });
 
 
-        rankBtn = findViewById(R.id.rankBtn);
         rankBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +97,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        aboutBtn = findViewById(R.id.aboutBtn);
         aboutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +115,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        logoutBtn = findViewById(R.id.logoutBtn);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +125,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        exitBtn = findViewById(R.id.exitBtn);
         exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
