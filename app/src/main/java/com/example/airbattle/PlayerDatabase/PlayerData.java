@@ -6,7 +6,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "players", indices = {@Index(value = {"username"}, unique = true)})
-public class Player {
+public class PlayerData {
     @PrimaryKey(autoGenerate = true)
     private int _id;
     @ColumnInfo(name = "username")
@@ -19,7 +19,7 @@ public class Player {
     private boolean status;
 
     // Constructor
-    public Player(String username, String password) {
+    public PlayerData(String username, String password) {
         this.username = username;
         this.password = password;
         this.status = false;

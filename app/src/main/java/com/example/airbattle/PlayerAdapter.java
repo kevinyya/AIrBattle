@@ -8,13 +8,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.airbattle.PlayerDatabase.PlayerData;
+
 import java.util.List;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
     private List<PlayerData> dataList;
     private int rowCnt = 1;
-    public PlayerAdapter(List<PlayerData> pList) {
-        dataList = pList;
+    public PlayerAdapter(List<PlayerData> playerList) {
+        dataList = playerList;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -40,7 +42,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         PlayerData playerData = dataList.get(position);
         holder.rank.setText(Integer.toString(rowCnt++));
         holder.username.setText(playerData.getUsername());
-        holder.score.setText(playerData.getScore());
+        holder.score.setText(Integer.toString(playerData.getScore()));
     }
 
     @Override

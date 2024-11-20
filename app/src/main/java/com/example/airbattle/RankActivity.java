@@ -8,22 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerData;
 import com.example.airbattle.PlayerDatabase.PlayerDao;
 import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class RankActivity extends AppCompatActivity {
     private PlayerDao playerDao;
-    private List<Player> playerList;
-    private List<PlayerData> playerDataList = new ArrayList<>();
+    private List<PlayerData> playerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,33 +39,27 @@ public class RankActivity extends AppCompatActivity {
             public void run() {
                 // Get Player List
                 playerList = playerDao.getAllPlayer();
-                for (Player player : playerList) {
-//                    Log.d("Debug", player.getUsername());
-//                    Log.d("Debug", Integer.toString(player.getScore()));
-                    int score = playerDao.getScore(player.getUsername());
-                    PlayerData newData = new PlayerData("0", player.getUsername(), Integer.toString(score));
-                    playerDataList.add(newData);
-                }
 
                 // Sort
-                Collections.sort(playerDataList, new Comparator<PlayerData>() {
+                Collections.sort(playerList, new Comparator<PlayerData>() {
                     @Override
                     public int compare(PlayerData player1, PlayerData player2) {
-//                        Integer score1 = player1.getScore();
-//                        Integer score2 = player2.getScore();
-//                        return score2.compareTo(score1);
-                        return player2.getScore().compareTo(player1.getScore());
+                        Integer score1 = player1.getScore();
+                        Integer score2 = player2.getScore();
+                        return score2.compareTo(score1);
                     }
                 });
 
-                // Add Title
-                PlayerData title = new PlayerData("Rank", "Username", "Score");
+                for (PlayerData player : playerList) {
+                    Log.d("Debug", player.getUsername());
+                    Log.d("Debug", Integer.toString(player.getScore()));
+                }
 
                 // Display Rank Table by RecyclerView
                 RecyclerView rankRV = (RecyclerView) findViewById(R.id.rankRV);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(RankActivity.this);
                 rankRV.setLayoutManager(layoutManager);
-                PlayerAdapter adapter = new PlayerAdapter(playerDataList);
+                PlayerAdapter adapter = new PlayerAdapter(playerList);
                 rankRV.setAdapter(adapter);
             }
         }).start();

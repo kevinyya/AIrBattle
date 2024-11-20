@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Player.class}, version = 2)
+@Database(entities = {PlayerData.class}, version = 2)
 public abstract class PlayerDatabase extends RoomDatabase {
     public abstract PlayerDao playerDao();
     private static volatile PlayerDatabase INSTANCE;

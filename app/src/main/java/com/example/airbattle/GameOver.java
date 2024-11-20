@@ -2,15 +2,13 @@ package com.example.airbattle;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerData;
 import com.example.airbattle.PlayerDatabase.PlayerDao;
 import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 
@@ -78,9 +76,8 @@ public class GameOver extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Player player = playerDao.getActivePlayer();
+                PlayerData player = playerDao.getActivePlayer();
                 int history_score = playerDao.getScore();
-                Log.d("Debug", Integer.toString(history_score));
                 if (score > history_score) {
                     playerDao.updateScore(player.getUsername(), score);
                 }
