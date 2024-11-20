@@ -42,3 +42,4 @@ public class PlayerData {
     public void setStatus(boolean status) { this.status = status; }
 
 }
+

@@ -46,9 +46,9 @@ public class Game {
     private Context context; // Context for dialogs
 
     private long lastSpawnTime;
-    private final long spawnInterval = 2000; // Spawn an enemy every 2 seconds
+    private long spawnInterval = 5000; // Spawn an enemy every 2 seconds
     private long lastBulletTime; // Track last bullet spawn time
-    private final long bulletInterval = 1000; // Shoot a bullet every 1 second
+    private long bulletInterval = 500; // Shoot a bullet every 1 second
 
     private long elapsedTime = 0; // Track elapsed time in milliseconds
     private final long increaseSpawnRateInterval = 60000; // 1 minute in milliseconds
@@ -57,6 +57,7 @@ public class Game {
     private SoundPool soundPool;
     private int soundId;
     private boolean isSoundLoaded = false;
+    private boolean isHardMode;
 
     public Game(Bitmap playerBitmap, Bitmap bulletBitmap, Bitmap[] enemyBitmaps, Bitmap heartBitmap, Bitmap backgroundBitmap, Bitmap explosionBitmap, Bitmap pauseBitmap, int screenWidth, int screenHeight, Context context) {
         this.player = new Player(playerBitmap, bulletBitmap, this);
@@ -82,6 +83,15 @@ public class Game {
         initializePlayerPosition();
         initializeSoundPool();
         applySavedVolumes();
+    }
+
+    public void setGameMode(boolean hardMode) {
+        isHardMode = hardMode;
+        if (isHardMode) {
+            playerHealth = 1; // Set player HP to 1 for hard mode
+            spawnInterval = 3000;
+            bulletInterval = 300;
+        }
     }
 
     private void initializePlayerPosition() {
@@ -179,9 +189,9 @@ public class Game {
     private int getRandomEnemyType() {
         // Weighted random selection
         int randomValue = (int) (Math.random() * 100); // Random number from 0 to 99
-        if (randomValue < 70) {
+        if (randomValue < 75) {
             return 0; // Small enemy (70% chance)
-        } else if (randomValue < 90) {
+        } else if (randomValue < 95) {
             return 1; // Medium enemy (20% chance)
         } else {
             return 2; // Large enemy (10% chance)
