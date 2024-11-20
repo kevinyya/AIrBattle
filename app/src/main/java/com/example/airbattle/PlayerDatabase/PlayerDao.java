@@ -49,4 +49,7 @@ public interface PlayerDao {
 
     @Query("SELECT score FROM players WHERE status = true")
     int getScore();
+
+    @Query("SELECT score FROM players WHERE username = :username")
+    int getScore(String username);
 }
