@@ -1,31 +1,77 @@
 package com.example.airbattle.ui.normal;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.airbattle.PlayerAdapter;
+import com.example.airbattle.PlayerDatabase.PlayerDao;
+import com.example.airbattle.PlayerDatabase.PlayerData;
+import com.example.airbattle.PlayerDatabase.PlayerDatabase;
+import com.example.airbattle.R;
+import com.example.airbattle.RankActivity;
 import com.example.airbattle.databinding.FragmentNormalRankBinding;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class NormalRankFragment extends Fragment {
 
     private FragmentNormalRankBinding binding;
 
+    private PlayerDao playerDao;
+    private List<PlayerData> playerList;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NormalRankViewModel homeViewModel =
+        NormalRankViewModel normalRankViewModel =
                 new ViewModelProvider(this).get(NormalRankViewModel.class);
 
         binding = FragmentNormalRankBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        // Get PlayerDao
+        playerDao = PlayerDatabase.getInstance(getContext()).playerDao();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Get Player List
+                playerList = playerDao.getAllPlayer();
+
+                // Sort
+                Collections.sort(playerList, new Comparator<PlayerData>() {
+                    @Override
+                    public int compare(PlayerData player1, PlayerData player2) {
+                        Integer score1 = player1.getScore();
+                        Integer score2 = player2.getScore();
+                        return score2.compareTo(score1);
+                    }
+                });
+
+                // Display Rank Table by RecyclerView
+                RecyclerView rankRV = binding.normalRankRV;
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                rankRV.setLayoutManager(layoutManager);
+                PlayerAdapter adapter = new PlayerAdapter(playerList);
+                rankRV.setAdapter(adapter);
+            }
+        }).start();
+
+
+//        final TextView textView = binding.textHome;
+//        normalRankViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
