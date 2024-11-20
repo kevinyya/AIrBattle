@@ -57,8 +57,12 @@ public class GameActivity extends AppCompatActivity {
         int screenWidth = metrics.widthPixels; // Get the width of the screen
         int screenHeight = metrics.heightPixels; // Get the height of the screen
 
+
+        boolean isHardMode = getIntent().getBooleanExtra("HARD_MODE", false);
+
         // Initialize the game and the thread
         game = new Game(playerBitmap, bulletBitmap, enemyBitmaps, heartBitmap, backgroundBitmap, explosionBitmap, pauseBitmap, screenWidth, screenHeight, this); // Pass 'this' as context
+        game.setGameMode(isHardMode);
         gameThread = new GameThread(surfaceHolder, game);
 
         // Set up the pause button

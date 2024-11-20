@@ -14,7 +14,7 @@ import android.widget.Button;
 public class MenuActivity extends AppCompatActivity {
 
     private Button startBtn;
-    private Button continueBtn;
+    private Button hardModeBtn;
     private Button rankBtn;
     private Button aboutBtn;
     private Button logoutBtn;
@@ -29,17 +29,22 @@ public class MenuActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Debug", "Start Game");
                 // Start the GameActivity
                 Intent intent = new Intent(MenuActivity.this, GameActivity.class);
                 startActivity(intent);
             }
         });
 
-        continueBtn = findViewById(R.id.continueBtn);
-        continueBtn.setOnClickListener(new View.OnClickListener() {
+        hardModeBtn = findViewById(R.id.hardModeBtn);
+        hardModeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Continue Game");
+                Log.d("Debug", "Hard Mode Activated");
+                // Start the GameActivity with hard mode
+                Intent intent = new Intent(MenuActivity.this, GameActivity.class);
+                intent.putExtra("HARD_MODE", true);
+                startActivity(intent);
             }
         });
 
@@ -49,8 +54,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Jump to RankActivity
-//                startActivity(intent);
-//                Intent intent = new Intent(getApplicationContext(), RankActivity.class);
+                Intent intent = new Intent(getApplicationContext(), RankActivity.class);
+                startActivity(intent);
             }
         });
 

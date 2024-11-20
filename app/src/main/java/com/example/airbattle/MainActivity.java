@@ -1,17 +1,14 @@
 package com.example.airbattle;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerData;
 import com.example.airbattle.PlayerDatabase.PlayerDao;
 import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 import com.google.android.material.snackbar.Snackbar;
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                                 playerDao.disableActivePlayer();
 
                                 // Get Player
-                                Player player = playerDao.getPlayer(username);
+                                PlayerData player = playerDao.getPlayer(username);
 
                                 // Check Password
                                 if (player.getPassword().equals(password)) {
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 // Check Active User and load info
                 if (!isEmpty() && playerDao.getActive() == 1) {
-                    Player activePlayer = playerDao.getActivePlayer();
+                    PlayerData activePlayer = playerDao.getActivePlayer();
                     usernameET.setText(activePlayer.getUsername());
                     passwordET.setText(activePlayer.getPassword());
                 } else {

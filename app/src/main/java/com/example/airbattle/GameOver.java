@@ -2,21 +2,20 @@ package com.example.airbattle;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerData;
 import com.example.airbattle.PlayerDatabase.PlayerDao;
 import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 
 public class GameOver extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
+
     private PlayerDao playerDao;
 
     @Override
@@ -40,7 +39,7 @@ public class GameOver extends AppCompatActivity {
         Button restartButton = findViewById(R.id.restart_button);
         Button mainMenuButton = findViewById(R.id.main_menu_button);
 
-        // Update score to Database
+        // Update score to database
         updateScore(score);
 
         // Set the score text
@@ -77,9 +76,8 @@ public class GameOver extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // Get Active User
-                Player player = playerDao.getActivePlayer();
-                int history_score = player.getScore();
+                PlayerData player = playerDao.getActivePlayer();
+                int history_score = playerDao.getScore();
                 if (score > history_score) {
                     playerDao.updateScore(player.getUsername(), score);
                 }

@@ -10,10 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.view.MenuItem;
 
-import com.example.airbattle.PlayerDatabase.Player;
+import com.example.airbattle.PlayerDatabase.PlayerData;
 import com.example.airbattle.PlayerDatabase.PlayerDao;
 import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,13 +27,14 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Get EditView
         usernameET = (EditText)findViewById(R.id.usernameET);
         passwordET = (EditText)findViewById(R.id.passwordET);
 
         // Get Database Instance
         playerDao = PlayerDatabase.getInstance(this).playerDao();
 
-        // Return
+        // Return in ActionBar
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
@@ -52,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
                             R.string.input_hint, Snackbar.LENGTH_SHORT).show();
                 } else {
                     // Create New User and Insert to Database
-                    Player newPlayer = new Player(username, password);
+                    PlayerData newPlayer = new PlayerData(username, password);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {

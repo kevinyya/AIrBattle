@@ -13,9 +13,9 @@ import java.util.List;
 public interface PlayerDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    void insert(Player ... player);
+    void insert(PlayerData... player);
     @Update
-    void update(Player player);
+    void update(PlayerData player);
 
     @Query("UPDATE players SET score = :score WHERE username = :username")
     void updateScore(String username, int score);
@@ -27,16 +27,16 @@ public interface PlayerDao {
     void disableActivePlayer();
 
     @Delete
-    void delete(Player status);
+    void delete(PlayerData status);
 
     @Query("SELECT * FROM players WHERE username = :username")
-    Player getPlayer(String username);
+    PlayerData getPlayer(String username);
 
     @Query("SELECT * FROM players WHERE status = true")
-    Player getActivePlayer();
+    PlayerData getActivePlayer();
 
     @Query("SELECT * FROM players")
-    List<Player> getAllPlayer();
+    List<PlayerData> getAllPlayer();
 
     @Query("SELECT COUNT(*) FROM players")
     int getCnt();
@@ -46,4 +46,10 @@ public interface PlayerDao {
 
     @Query("SELECT COUNT(*) FROM players WHERE status = true")
     int getActive();
+
+    @Query("SELECT score FROM players WHERE status = true")
+    int getScore();
+
+    @Query("SELECT score FROM players WHERE username = :username")
+    int getScore(String username);
 }
