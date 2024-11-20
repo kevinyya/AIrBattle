@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation2"
+    app:startDestination="@+id/navigation_normal">
+
+    <fragment
+        android:id="@+id/navigation_normal"
+        android:name="com.example.airbattle.ui.normal.NormalRankFragment"
+        android:label="@string/title_normal"
+        tools:layout="@layout/fragment_normal_rank" />
+
+    <fragment
+        android:id="@+id/navigation_hard"
+        android:name="com.example.airbattle.ui.hard.HardRankFragment"
+        android:label="@string/title_hard"
+        tools:layout="@layout/fragment_hard_rank" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.airbattle.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
+</navigation>

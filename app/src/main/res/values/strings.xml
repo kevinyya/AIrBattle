@@ -24,6 +24,10 @@
         \n- See your best record in ranking.
         \n- Enjoy the game!.
     </string>
-    <string name="pause_button">Pause</string> <!-- Add this line -->
+    <string name="pause_button">Pause</string>
+    <string name="title_activity_rank_navi">rankNaviActivity</string>
+    <string name="title_normal">Normal Ranking</string>
+    <string name="title_hard">Hard Ranking</string>
+    <string name="title_notifications">Notifications</string> <!-- Add this line -->
 
 </resources>
