@@ -1,7 +1,9 @@
 package com.example.airbattle;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -73,13 +75,27 @@ public class GameOver extends AppCompatActivity {
     }
 
     private void updateScore(int score) {
+        // Get difficulty from preference
+        SharedPreferences pref = getSharedPreferences("AirBattle", MODE_PRIVATE);
+        boolean isHard = pref.getBoolean("isHard", false);
+
+        Log.d("Debug", Boolean.toString(isHard));
+
+        // Save data to database
         new Thread(new Runnable() {
             @Override
             public void run() {
                 PlayerData player = playerDao.getActivePlayer();
-                int history_score = playerDao.getScore();
-                if (score > history_score) {
-                    playerDao.updateScore(player.getUsername(), score);
+                if (isHard) {
+                    int history_score = playerDao.getHardScore();
+                    if (score > history_score) {
+                        playerDao.updateHardScore(player.getUsername(), score);
+                    }
+                } else {
+                    int history_score = playerDao.getNormalScore();
+                    if (score > history_score) {
+                        playerDao.updateNormalScore(player.getUsername(), score);
+                    }
                 }
             }
         }).start();

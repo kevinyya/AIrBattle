@@ -13,8 +13,10 @@ public class PlayerData {
     private String username;
     @ColumnInfo(name = "password")
     private String password;
-    @ColumnInfo(name = "score")
-    private int score;
+    @ColumnInfo(name = "nScore")
+    private int nScore;
+    @ColumnInfo(name = "hScore")
+    private int hScore;
     @ColumnInfo(name = "status")
     private boolean status;
 
@@ -30,12 +32,13 @@ public class PlayerData {
     public void setId(int _id) { this._id = _id; }
 
     public String getUsername() { return this.username; }
-
     public String getPassword() { return this.password; }
 
-    public int getScore() { return this.score; }
+    public int getNScore() { return this.nScore; }
+    public void setNScore(int nScore) { this.nScore = nScore; }
 
-    public void setScore(int score) { this.score = score; }
+    public int getHScore() { return this.hScore; }
+    public void setHScore(int hScore) { this.hScore = hScore; }
 
     public boolean getStatus() { return status; }
 

@@ -42,7 +42,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         PlayerData playerData = dataList.get(position);
         holder.rank.setText(Integer.toString(rowCnt++));
         holder.username.setText(playerData.getUsername());
-        holder.score.setText(Integer.toString(playerData.getScore()));
+        holder.score.setText(Integer.toString(playerData.getNScore()));
     }
 
     @Override

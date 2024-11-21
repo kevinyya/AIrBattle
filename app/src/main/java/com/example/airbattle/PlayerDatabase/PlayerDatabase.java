@@ -17,7 +17,7 @@ public abstract class PlayerDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(
                                     context.getApplicationContext(),
                                     PlayerDatabase.class,
-                                    "test_player_database1"
+                                    "test_player_database3"
                             )
                             .fallbackToDestructiveMigration()
                             .build();

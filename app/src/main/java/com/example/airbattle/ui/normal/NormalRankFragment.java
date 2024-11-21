@@ -57,8 +57,8 @@ public class NormalRankFragment extends Fragment {
                 Collections.sort(playerList, new Comparator<PlayerData>() {
                     @Override
                     public int compare(PlayerData player1, PlayerData player2) {
-                        Integer score1 = player1.getScore();
-                        Integer score2 = player2.getScore();
+                        Integer score1 = player1.getNScore();
+                        Integer score2 = player2.getNScore();
                         return score2.compareTo(score1);
                     }
                 });

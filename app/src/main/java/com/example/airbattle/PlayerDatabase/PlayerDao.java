@@ -17,8 +17,11 @@ public interface PlayerDao {
     @Update
     void update(PlayerData player);
 
-    @Query("UPDATE players SET score = :score WHERE username = :username")
-    void updateScore(String username, int score);
+    @Query("UPDATE players SET nScore = :nScore WHERE username = :username")
+    void updateNormalScore(String username, int nScore);
+
+    @Query("UPDATE players SET hscore = :hScore WHERE username = :username")
+    void updateHardScore(String username, int hScore);
 
     @Query("UPDATE players SET status = true WHERE username = :username")
     void enableActivePlayer(String username);
@@ -47,9 +50,15 @@ public interface PlayerDao {
     @Query("SELECT COUNT(*) FROM players WHERE status = true")
     int getActive();
 
-    @Query("SELECT score FROM players WHERE status = true")
-    int getScore();
+    @Query("SELECT nScore FROM players WHERE status = true")
+    int getNormalScore();
 
-    @Query("SELECT score FROM players WHERE username = :username")
-    int getScore(String username);
+    @Query("SELECT nScore FROM players WHERE username = :username")
+    int getNormalScore(String username);
+
+    @Query("SELECT hScore FROM players WHERE status = true")
+    int getHardScore();
+
+    @Query("SELECT hScore FROM players WHERE username = :username")
+    int getHardScore(String username);
 }
