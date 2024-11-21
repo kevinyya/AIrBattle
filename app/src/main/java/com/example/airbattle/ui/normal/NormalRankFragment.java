@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,9 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class NormalRankFragment extends Fragment {
-
     private FragmentNormalRankBinding binding;
-
     private PlayerDao playerDao;
     private List<PlayerData> playerList;
 
@@ -43,6 +43,9 @@ public class NormalRankFragment extends Fragment {
 
         // Get PlayerDao
         playerDao = PlayerDatabase.getInstance(getContext()).playerDao();
+
+        // Return in Toolbar
+        Toolbar toolbar = binding.normalRankTB;
 
         new Thread(new Runnable() {
             @Override
@@ -69,9 +72,6 @@ public class NormalRankFragment extends Fragment {
             }
         }).start();
 
-
-//        final TextView textView = binding.textHome;
-//        normalRankViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -79,5 +79,13 @@ public class NormalRankFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 }
