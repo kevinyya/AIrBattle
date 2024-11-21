@@ -79,8 +79,6 @@ public class GameOver extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("AirBattle", MODE_PRIVATE);
         boolean isHard = pref.getBoolean("isHard", false);
 
-        Log.d("Debug", Boolean.toString(isHard));
-
         // Save data to database
         new Thread(new Runnable() {
             @Override

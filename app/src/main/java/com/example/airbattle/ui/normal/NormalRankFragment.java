@@ -47,6 +47,7 @@ public class NormalRankFragment extends Fragment {
         // Return in Toolbar
         Toolbar toolbar = binding.normalRankTB;
 
+        // Draw Normal Ranking Table
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -63,11 +64,11 @@ public class NormalRankFragment extends Fragment {
                     }
                 });
 
-                // Display Rank Table by RecyclerView
+                // Display Normal Rank Table by RecyclerView
                 RecyclerView rankRV = binding.normalRankRV;
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                 rankRV.setLayoutManager(layoutManager);
-                PlayerAdapter adapter = new PlayerAdapter(playerList);
+                PlayerAdapter adapter = new PlayerAdapter(playerList, false);
                 rankRV.setAdapter(adapter);
             }
         }).start();

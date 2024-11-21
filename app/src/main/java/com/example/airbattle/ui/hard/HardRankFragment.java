@@ -11,12 +11,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.airbattle.PlayerAdapter;
+import com.example.airbattle.PlayerDatabase.PlayerDao;
+import com.example.airbattle.PlayerDatabase.PlayerData;
+import com.example.airbattle.PlayerDatabase.PlayerDatabase;
 import com.example.airbattle.databinding.FragmentHardRankBinding;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class HardRankFragment extends Fragment {
 
     private FragmentHardRankBinding binding;
+    private PlayerDao playerDao;
+    private List<PlayerData> playerList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -26,10 +38,37 @@ public class HardRankFragment extends Fragment {
         binding = FragmentHardRankBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Get PlayerDao
+        playerDao = PlayerDatabase.getInstance(getContext()).playerDao();
+
         // Return in Toolbar
         Toolbar toolbar = binding.hardRankTB;
 
+        // Draw Normal Ranking Table
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Get Player List
+                playerList = playerDao.getAllPlayer();
 
+                // Sort
+                Collections.sort(playerList, new Comparator<PlayerData>() {
+                    @Override
+                    public int compare(PlayerData player1, PlayerData player2) {
+                        Integer score1 = player1.getHScore();
+                        Integer score2 = player2.getHScore();
+                        return score2.compareTo(score1);
+                    }
+                });
+
+                // Display Normal Rank Table by RecyclerView
+                RecyclerView rankRV = binding.hardRankRV;
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                rankRV.setLayoutManager(layoutManager);
+                PlayerAdapter adapter = new PlayerAdapter(playerList, true);
+                rankRV.setAdapter(adapter);
+            }
+        }).start();
 
         return root;
     }

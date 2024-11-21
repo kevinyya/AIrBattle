@@ -50,16 +50,16 @@ public class RankActivity extends AppCompatActivity {
                     }
                 });
 
-                for (PlayerData player : playerList) {
-                    Log.d("Debug", player.getUsername());
-                    Log.d("Debug", Integer.toString(player.getNScore()));
-                }
+                // for (PlayerData player : playerList) {
+                //     Log.d("Debug", player.getUsername());
+                //     Log.d("Debug", Integer.toString(player.getNScore()));
+                // }
 
                 // Display Rank Table by RecyclerView
                 RecyclerView rankRV = (RecyclerView) findViewById(R.id.rankRV);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(RankActivity.this);
                 rankRV.setLayoutManager(layoutManager);
-                PlayerAdapter adapter = new PlayerAdapter(playerList);
+                PlayerAdapter adapter = new PlayerAdapter(playerList, false);
                 rankRV.setAdapter(adapter);
             }
         }).start();

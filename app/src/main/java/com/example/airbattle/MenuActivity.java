@@ -69,7 +69,7 @@ public class MenuActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Start Game");
+                // Log.d("Debug", "Start Game");
                 // Start the GameActivity
                 Intent intent = new Intent(MenuActivity.this, GameActivity.class);
                 if (isHard) intent.putExtra("HARD_MODE", true);
@@ -99,7 +99,7 @@ public class MenuActivity extends AppCompatActivity {
         aboutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "About Game ");
+                // Log.d("Debug", "About Game ");
                 AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this);
                 builder.setTitle(R.string.about_title);
                 builder.setMessage(R.string.about_msg);
@@ -117,7 +117,7 @@ public class MenuActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Log out user");
+                // Log.d("Debug", "Log out user");
                 // Log out to MainActivity
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -127,7 +127,7 @@ public class MenuActivity extends AppCompatActivity {
         exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Debug", "Exit Game");
+                // Log.d("Debug", "Exit Game");
                 finishAffinity();
             }
         });

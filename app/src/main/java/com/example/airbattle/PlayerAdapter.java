@@ -13,10 +13,13 @@ import com.example.airbattle.PlayerDatabase.PlayerData;
 import java.util.List;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
-    private List<PlayerData> dataList;
+    private List<PlayerData> playerDataList;
     private int rowCnt = 1;
-    public PlayerAdapter(List<PlayerData> playerList) {
-        dataList = playerList;
+    private boolean isHard;
+
+    public PlayerAdapter(List<PlayerData> playerList, boolean isHard) {
+        playerDataList = playerList;
+        this.isHard = isHard;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,14 +42,18 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PlayerAdapter.ViewHolder holder, int position) {
-        PlayerData playerData = dataList.get(position);
+        PlayerData playerData = playerDataList.get(position);
         holder.rank.setText(Integer.toString(rowCnt++));
         holder.username.setText(playerData.getUsername());
-        holder.score.setText(Integer.toString(playerData.getNScore()));
+        if (this.isHard) {
+            holder.score.setText(Integer.toString(playerData.getHScore()));
+        } else {
+            holder.score.setText(Integer.toString(playerData.getNScore()));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return playerDataList.size();
     }
 }

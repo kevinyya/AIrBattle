@@ -59,7 +59,7 @@ public class SignupActivity extends AppCompatActivity {
                             try {
                                 playerDao.insert(newPlayer);
                             } catch (SQLiteConstraintException e) {
-                                Log.d("Debug", "Insert New Player Failed");
+                                Log.e("Debug", "Insert New Player Failed");
                             }
                         }
                     }).start();
