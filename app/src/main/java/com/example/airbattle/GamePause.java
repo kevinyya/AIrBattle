@@ -79,4 +79,9 @@ public class GamePause extends AppCompatActivity {
         editor.putFloat(key, volume);
         editor.apply();
     }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+    }
 }

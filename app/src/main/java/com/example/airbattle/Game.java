@@ -429,6 +429,10 @@ public class Game {
         return isPaused; // To check the paused state if necessary
     }
 
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
     private void goToPauseScreen() {
         Intent intent = new Intent(context, GamePause.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

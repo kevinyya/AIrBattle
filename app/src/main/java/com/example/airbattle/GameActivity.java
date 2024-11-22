@@ -26,7 +26,6 @@ public class GameActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,11 +153,17 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus == false) {
+        if (hasFocus == false && !game.isPaused() && !game.isGameOver()) {
             // Jump to Pause Activity
             Intent intent = new Intent(getApplicationContext(), GamePause.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
     }
 }

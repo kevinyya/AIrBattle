@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         usernameET = (EditText)findViewById(R.id.usernameET);
         passwordET = (EditText)findViewById(R.id.passwordET);
 
-        // Remember me??
         // Get and Load Last Active Player
         loadActivePlayer();
 
@@ -55,28 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             // Database not Empty and Username Existed
-                            if (isExisted(username)) {
-                                // Disable Last Active Player
-                                playerDao.disableActivePlayer();
-
-                                // Get Player
-                                PlayerData player = playerDao.getPlayer(username);
-
-                                // Check Password
-                                if (player.getPassword().equals(password)) {
-                                    // Active User
-                                    playerDao.enableActivePlayer(username);
-                                    // Login and jump to MenuActivity
-                                    Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Snackbar.make(findViewById(android.R.id.content),
-                                            R.string.password_error, Snackbar.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Snackbar.make(findViewById(android.R.id.content),
-                                        R.string.signup_hint, Snackbar.LENGTH_SHORT).show();
-                            }
+                            accountCheck(username, password);
                         }
                     }).start();
                 }
@@ -94,6 +72,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void accountCheck(String username, String password) {
+        if (isExisted(username)) {
+            // Disable Last Active Player
+            playerDao.disableActivePlayer();
+
+            // Get Player
+            PlayerData player = playerDao.getPlayer(username);
+
+            // Check Password
+            if (player.getPassword().equals(password)) {
+                // Active User
+                playerDao.enableActivePlayer(username);
+                // Login and jump to MenuActivity
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(intent);
+            } else {
+                Snackbar.make(findViewById(android.R.id.content),
+                        R.string.password_error, Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            Snackbar.make(findViewById(android.R.id.content),
+                    R.string.signup_hint, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
     private boolean isEmpty() {
         return playerDao.getCnt() == 0 ? true : false;
     }
@@ -116,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
     }
 
 }
