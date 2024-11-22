@@ -1,5 +1,6 @@
 package com.example.airbattle;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -147,6 +148,17 @@ public class GameActivity extends AppCompatActivity {
     private void setMusicVolume(float volume) {
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(volume, volume);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus == false) {
+            // Jump to Pause Activity
+            Intent intent = new Intent(getApplicationContext(), GamePause.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 }
