@@ -63,7 +63,12 @@ public class GameOver extends AppCompatActivity {
     }
 
     private void restartGame() {
+        // Get difficulty from preference
+        SharedPreferences pref = getSharedPreferences("AirBattle", MODE_PRIVATE);
+        boolean isHard = pref.getBoolean("isHard", false);
         Intent intent = new Intent(this, GameActivity.class); // Adjust to your main game activity
+        // Restart game with hard mode
+        if (isHard) intent.putExtra("HARD_MODE", true);
         startActivity(intent);
         finish(); // Finish this activity
     }

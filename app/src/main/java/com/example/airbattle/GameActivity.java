@@ -154,6 +154,7 @@ public class GameActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus == false && !game.isPaused() && !game.isGameOver()) {
+            Log.d("Debug", "isGameOver: " + Boolean.toString(game.isGameOver()));
             // Jump to Pause Activity
             Intent intent = new Intent(getApplicationContext(), GamePause.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
