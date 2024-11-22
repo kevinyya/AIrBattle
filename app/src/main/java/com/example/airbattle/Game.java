@@ -48,7 +48,7 @@ public class Game {
     private long lastSpawnTime;
     private long spawnInterval = 5000; // Spawn an enemy every 2 seconds
     private long lastBulletTime; // Track last bullet spawn time
-    private long bulletInterval = 500; // Shoot a bullet every 1 second
+    private long bulletInterval = 1000; // Shoot a bullet every 1 second
 
     private long elapsedTime = 0; // Track elapsed time in milliseconds
     private final long increaseSpawnRateInterval = 60000; // 1 minute in milliseconds
