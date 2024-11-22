@@ -307,7 +307,7 @@ public class Game {
 
     private void drawHealth(Canvas canvas) {
         for (int i = 0; i < playerHealth; i++) {
-            canvas.drawBitmap(heartBitmap, canvas.getWidth() - 1100 + i * 100, canvas.getHeight() - 150, null);
+             canvas.drawBitmap(heartBitmap, canvas.getWidth() - 1300 + i * 100, canvas.getHeight() - 150, null);
         }
     }
 
