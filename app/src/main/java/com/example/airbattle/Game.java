@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -222,7 +223,7 @@ public class Game {
                 lastDestroyedEnemyX = enemy.getX(); // Get the enemy's X position
                 lastDestroyedEnemyY = enemy.getY(); // Get the enemy's Y position
                 explosionStartTime = System.currentTimeMillis(); // Start explosion timer
-                explosionBitmap = getScaledExplosionBitmap(enemy.getType());
+                explosionBitmap = getExplosionBitmap(enemy.getType());
                 playExplosionSound();
                 enemies.remove(i); // Remove enemy on collision
                 continue;
@@ -244,7 +245,7 @@ public class Game {
             lastDestroyedEnemyX = player.getX(); // Get the enemy's X position
             lastDestroyedEnemyY = player.getY(); // Get the enemy's Y position
             explosionStartTime = System.currentTimeMillis(); // Start explosion timer
-            explosionBitmap = getScaledExplosionBitmap(2);
+            explosionBitmap = getExplosionBitmap(3);
             isGameOver = true; // End the game if health is zero
 
             Intent intent = new Intent(context, GameOver.class);
@@ -267,7 +268,7 @@ public class Game {
                     lastDestroyedEnemyX = enemy.getX(); // Get the enemy's X position
                     lastDestroyedEnemyY = enemy.getY(); // Get the enemy's Y position
                     explosionStartTime = System.currentTimeMillis(); // Start explosion timer
-                    explosionBitmap = getScaledExplosionBitmap(enemy.getType());
+                    explosionBitmap = getExplosionBitmap(enemy.getType());
                     playExplosionSound();
                     increaseScore(getEnemyPoints(enemy));
                     enemies.remove(enemyIndex);
@@ -364,26 +365,49 @@ public class Game {
         bullets.add(bullet);
     }
 
-    private float getExplosionScale(int enemyType) {
+//    private float getExplosionScale(int enemyType) {
+//        switch (enemyType) {
+//            case 0: // Small enemy
+//                return 3.0f; // Scale down to 50%
+//            case 1: // Medium enemy
+//                return 5.0f; // Original size
+//            case 2: // Large enemy
+//                return 10.0f; // Scale up to 150%
+//            default:
+//                return 2.0f; // Default scale
+//        }
+//    }
+//
+//    private Bitmap getScaledExplosionBitmap(int enemyType) {
+//        float scale = getExplosionScale(enemyType);
+//        int explosionWidth = (int) (59 * scale); // Original width
+//        int explosionHeight = (int) (59 * scale); // Original height
+//
+//        return Bitmap.createScaledBitmap(explosionBitmap, explosionWidth, explosionHeight, false);
+//    }
+
+    private Bitmap getExplosionBitmap(int enemyType) {
+        Bitmap retBitmap = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+
         switch (enemyType) {
-            case 0: // Small enemy
-                return 3.0f; // Scale down to 50%
-            case 1: // Medium enemy
-                return 5.0f; // Original size
-            case 2: // Large enemy
-                return 10.0f; // Scale up to 150%
-            default:
-                return 2.0f; // Default scale
+            case 0:
+                retBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy_small_explosion, options);
+                break;
+            case 1:
+                retBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy_medium_explosion, options);
+                break;
+            case 2:
+                retBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy_large_explosion, options);
+                break;
+            case 3:
+                retBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.player_explosion, options);
+            default: break;
         }
+        return retBitmap;
     }
 
-    private Bitmap getScaledExplosionBitmap(int enemyType) {
-        float scale = getExplosionScale(enemyType);
-        int explosionWidth = (int) (59 * scale); // Original width
-        int explosionHeight = (int) (59 * scale); // Original height
-
-        return Bitmap.createScaledBitmap(explosionBitmap, explosionWidth, explosionHeight, false);
-    }
 
     public void pauseGame() {
         isPaused = true; // Set the game to paused state
