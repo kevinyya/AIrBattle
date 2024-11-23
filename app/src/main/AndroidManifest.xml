@@ -13,10 +13,6 @@
         android:theme="@style/Theme.AirBattle"
         tools:targetApi="31">
         <activity
-            android:name=".RankNaviActivity"
-            android:exported="false"
-            android:label="@string/title_activity_rank_navi" />
-        <activity
             android:name=".RankActivity"
             android:exported="false" />
         <activity

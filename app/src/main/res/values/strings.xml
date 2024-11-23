@@ -2,8 +2,9 @@
     <string name="app_name">AirBattle</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
-    <string name="input_hint">Please input Username and Password</string>
-    <string name="signup_hint">Please sign-up an account</string>
+    <string name="input_hint">Please input Username and Password!</string>
+    <string name="signup_hint">Please sign-up an account!</string>
+    <string name="signup_existed_hint">Username is existed!</string>
     <string name="password_error">Password error!</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
@@ -20,14 +21,12 @@
     <string name="about_title">About AirBattle</string>
     <string name="about_msg">- Control the movement with your finger.
         \n- Aircraft will shoot automatically.
-        \n- Pick up floating props for enhancement.
+        \n- Defeat enemy aircraft to gain points.
         \n- See your best record in ranking.
         \n- Enjoy the game!.
     </string>
     <string name="pause_button">Pause</string>
-    <string name="title_activity_rank_navi">rankNaviActivity</string>
     <string name="title_normal">Normal Ranking</string>
     <string name="title_hard">Hard Ranking</string>
-    <string name="title_notifications">Notifications</string> <!-- Add this line -->
 
 </resources>

@@ -1,68 +1,41 @@
 package com.example.airbattle;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
-import com.example.airbattle.PlayerDatabase.PlayerData;
-import com.example.airbattle.PlayerDatabase.PlayerDao;
-import com.example.airbattle.PlayerDatabase.PlayerDatabase;
+import com.example.airbattle.databinding.ActivityRankBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.example.airbattle.databinding.ActivityRankBinding;
 
 public class RankActivity extends AppCompatActivity {
-    private PlayerDao playerDao;
-    private List<PlayerData> playerList;
+
+    private ActivityRankBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rank);
 
-        // Return in ActionBar
-        ActionBar bar = getSupportActionBar();
-        bar.setDisplayHomeAsUpEnabled(true);
+        binding = ActivityRankBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        // Get PlayerDao
-        playerDao = PlayerDatabase.getInstance(this).playerDao();
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_normal, R.id.navigation_hard)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_rank_navi);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Get Player List
-                playerList = playerDao.getAllPlayer();
-
-                // Sort
-                Collections.sort(playerList, new Comparator<PlayerData>() {
-                    @Override
-                    public int compare(PlayerData player1, PlayerData player2) {
-                        Integer score1 = player1.getNScore();
-                        Integer score2 = player2.getNScore();
-                        return score2.compareTo(score1);
-                    }
-                });
-
-                // for (PlayerData player : playerList) {
-                //     Log.d("Debug", player.getUsername());
-                //     Log.d("Debug", Integer.toString(player.getNScore()));
-                // }
-
-                // Display Rank Table by RecyclerView
-                RecyclerView rankRV = (RecyclerView) findViewById(R.id.rankRV);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(RankActivity.this);
-                rankRV.setLayoutManager(layoutManager);
-                PlayerAdapter adapter = new PlayerAdapter(playerList, false);
-                rankRV.setAdapter(adapter);
-            }
-        }).start();
     }
 
     @Override

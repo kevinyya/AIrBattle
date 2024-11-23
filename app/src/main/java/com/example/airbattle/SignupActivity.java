@@ -52,20 +52,22 @@ public class SignupActivity extends AppCompatActivity {
                             R.string.input_hint, Snackbar.LENGTH_SHORT).show();
                 } else {
                     // Create New User and Insert to Database
-                    PlayerData newPlayer = new PlayerData(username, password);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            try {
+                            if (playerDao.getExisted(username) == 0) {
+                                PlayerData newPlayer = new PlayerData(username, password);
                                 playerDao.insert(newPlayer);
-                            } catch (SQLiteConstraintException e) {
-                                Log.e("Debug", "Insert New Player Failed");
+                                // Return to MainActivity
+                                returnToMain();
+                            } else {
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        R.string.signup_existed_hint, Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     }).start();
 
-                    // Return to MainActivity
-                    returnToMain();
+
                 }
             }
         });

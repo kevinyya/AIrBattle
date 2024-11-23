@@ -1,14 +1,11 @@
 package com.example.airbattle.ui.normal;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -20,8 +17,6 @@ import com.example.airbattle.PlayerAdapter;
 import com.example.airbattle.PlayerDatabase.PlayerDao;
 import com.example.airbattle.PlayerDatabase.PlayerData;
 import com.example.airbattle.PlayerDatabase.PlayerDatabase;
-import com.example.airbattle.R;
-import com.example.airbattle.RankActivity;
 import com.example.airbattle.databinding.FragmentNormalRankBinding;
 
 import java.util.Collections;
