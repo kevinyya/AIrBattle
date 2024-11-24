@@ -247,7 +247,7 @@ public class Game {
             explosionStartTime = System.currentTimeMillis(); // Start explosion timer
             explosionBitmap = getExplosionBitmap(3);
             isGameOver = true; // End the game if health is zero
-
+             Log.d("Game", "Game is over");
             Intent intent = new Intent(context, GameOver.class);
             intent.putExtra("SCORE", score); // Assuming playerScore holds the current score
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -321,10 +321,10 @@ public class Game {
     }
 
     public void handleTouch(float x, float y) {
-        if (isGameOver) {
-            resetGame(); // Restart game on touch if game over
-            return;
-        }
+//        if (isGameOver) {
+//            resetGame(); // Restart game on touch if game over
+//            return;
+//        }
 
         // Check for pause button touch
         if (backgroundBitmap.getWidth() - 200 < x &&  x < backgroundBitmap.getWidth() - 20 && 20 < y && y < 150) {
