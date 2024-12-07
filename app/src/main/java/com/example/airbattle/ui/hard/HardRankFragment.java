@@ -49,17 +49,7 @@ public class HardRankFragment extends Fragment {
             @Override
             public void run() {
                 // Get Player List
-                playerList = playerDao.getAllPlayer();
-
-                // Sort
-                Collections.sort(playerList, new Comparator<PlayerData>() {
-                    @Override
-                    public int compare(PlayerData player1, PlayerData player2) {
-                        Integer score1 = player1.getHScore();
-                        Integer score2 = player2.getHScore();
-                        return score2.compareTo(score1);
-                    }
-                });
+                playerList = playerDao.getPlayersSortByHard();
 
                 // Display Normal Rank Table by RecyclerView
                 RecyclerView rankRV = binding.hardRankRV;

@@ -41,6 +41,12 @@ public interface PlayerDao {
     @Query("SELECT * FROM players")
     List<PlayerData> getAllPlayer();
 
+    @Query("SELECT * FROM players ORDER BY nScore DESC")
+    List<PlayerData> getPlayersSortByNormal();
+
+    @Query("SELECT * FROM players ORDER BY hScore DESC")
+    List<PlayerData> getPlayersSortByHard();
+
     @Query("SELECT COUNT(*) FROM players")
     int getCnt();
 
